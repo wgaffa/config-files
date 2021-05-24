@@ -1,9 +1,14 @@
 #!/usr/bin/env fish
 
-function fish_prompt
-    eval $GOPATH/bin/powerline-go -error $status -newline -shell bare
+if test -d $HOME/.local/bin
+    set -gx PATH $HOME/.local/bin
 end
 
-set -gx PATH $PATH $HOME/.local/bin $HOME/.ghcup/bin $HOME/.cabal/bin
-set -gx EDITOR nvim
-set -gx VISUAL nvim
+if test -d $HOME/.ghcup/bin
+    set -gx PATH $HOME/.ghcup/bin
+end
+
+if test -d $HOME/.cabal/bin
+    set -gx PATH $HOME/.cabal/bin
+end
+
