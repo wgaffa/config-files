@@ -1,3 +1,5 @@
+#!/usr/bin/fish
+
 function print_help
     echo "mirror [-p/--print] SOURCE TARGET"
 end
