@@ -1,5 +1,9 @@
 set -l configDir $HOME/.config/fish
 
+if ! status is-interactive
+    exit
+end
+
 if command -qs my_prompt
     set -l prompt (my_prompt)
 
