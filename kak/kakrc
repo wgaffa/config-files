@@ -43,7 +43,11 @@ plug "chambln/kakoune-kit" config %{
         map window normal o     ': %val{selections}<a-!><home> git checkout '
     }
 }
-plug "alexherbo2/surround.kak"
+
+plug "alexherbo2/surround.kak" %{
+    map global user s ':surround-mode<ret>' -docstring "Surround selection"
+}
+
 plug "delapouite/kakoune-buffers" %{
     map global normal ^ q
     map global normal <a-^> Q
@@ -64,6 +68,12 @@ plug "alexherbo2/auto-pairs.kak" config %{
 }
 plug "andreyorst/smarttab.kak" config %{
     hook global BufCreate .* expandtab
+}
+plug "TeddyDD/kakoune-wiki" config %{
+    wiki-setup %sh{ echo $HOME/wiki }
+}
+
+plug "wgaffa/kak-unicode" %{
 }
 
 alias global bd delete-buffer
@@ -89,7 +99,7 @@ hook global WinCreate .* %{
     hook -group manual-indent-spaces window InsertDelete ' ' manual-indent-space-deleted
 }
 
-define-command -hidden manual-indent-space-deleted %{
+define-command -override -hidden manual-indent-space-deleted %{
     try %{
         execute-keys -draft 'h<a-h><a-k>\A\h+\z<ret>i<space><esc><lt>'
     }
@@ -98,24 +108,35 @@ define-command -hidden manual-indent-space-deleted %{
 # User settings
 
 set-option global tabstop 4
-set-option global ui_options terminal_assistant=none
+set-option global ui_options terminal_assistant=none terminal_status_on_top=true
 
 add-highlighter global/ show-matching
 add-highlighter global/ number-lines -relative -min-digits 3
 add-highlighter global/ column 90 MenuBackground
 
-define-command -docstring "vsplit [<commands>]: split tmux vertically" \
+map global normal <c-space> <a-space>
+
+define-command -override -docstring "vsplit [<commands>]: split tmux vertically" \
 vsplit -params .. -command-completion %{
     tmux-terminal-horizontal kak -c %val{session} -e "%arg{@}"
 }
 
-define-command -docstring "split [<commands>]: split tmux horizontally" \
+define-command -override -docstring "split [<commands>]: split tmux horizontally" \
 split -params .. -command-completion %{
     tmux-terminal-vertical kak -c %val{session} -e "%arg{@}"
 }
 
-define-command -docstring "tabnew [<commands>]: create new tmux window" \
+define-command -override -docstring "tabnew [<commands>]: create new tmux window" \
 tabnew -params .. -command-completion %{
     tmux-terminal-window kak -c %val{session} -e "%arg{@}"
 }
 
+source "%val{config}/reschedule/reschedule.kak"
+
+map -docstring "Replace word with it's corresponding unicode character" \
+global normal <a-u> "<a-i>w|uecho<ret>"
+
+map -docstring "Comment line" \
+global user c ":comment-line<ret>"
+
+set-option global autocomplete prompt

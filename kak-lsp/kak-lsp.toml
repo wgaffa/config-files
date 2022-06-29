@@ -284,6 +284,7 @@ hoverActions.enable = false # kak-lsp doesn't support this at the moment
 procMacro.enable = true
 cargo.loadOutDirsFromCheck = true
 # # See https://github.com/rust-analyzer/rust-analyzer/issues/6448
+inlayHints.chainHints = false
 inlayHints.parameterHints = false
 inlayHints.typeHints = false
 
