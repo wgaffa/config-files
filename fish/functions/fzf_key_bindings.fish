@@ -1,0 +1,1 @@
+/home/wgaffa/.fzf/shell/key-bindings.fish
