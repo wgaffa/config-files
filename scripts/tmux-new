@@ -1,0 +1,27 @@
+#!/bin/sh
+
+usage() {
+    echo $(basename "$0"): ERROR: "$@" 1>&2
+    echo usage: $(basename "$0") 'session' [start_dir] 1>&2
+    exit 1
+}
+
+[ -z $1 ] && usage "You must provide a session name to create or attach"
+session=$1; shift
+
+start_dir=
+if [ -n "$1" ]; then
+    start_dir=$1
+    shift
+fi
+
+tmux has-session -t $session 2> /dev/null
+
+[ $? -ne 0 ] && TMUX= tmux new -d -s "$session" ${start_dir+"-c $start_dir"} $@
+
+if [ -z $TMUX ]; then
+    tmux attach -t "$session" ${start_dir+"-c $start_dir"} $@
+else
+    tmux switch-client -t "$session"
+fi
+
