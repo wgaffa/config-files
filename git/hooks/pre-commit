@@ -1,0 +1,21 @@
+#!/bin/sh
+
+stash="pre-commit-$(date +%s)"
+git stash push -q --keep-index
+
+cargo test -q
+
+[ $? -ne 0 ] && exit 1;
+
+git stash pop -q
+
+## No debugging code
+forbidden='dbg!'
+file_patterns='\.(rs)$'
+
+git diff --cached --name-only | \
+    grep -E "$file_pattern" | \
+    xargs grep --with-filename -n "$forbidden" \
+    && echo "Commit REJECTED, found debugging code" && exit 1
+
+echo "Pre-Commit hooks done"
